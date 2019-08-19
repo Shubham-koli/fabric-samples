@@ -7,7 +7,8 @@
 const { FileSystemWallet, Gateway, X509WalletMixin } = require('fabric-network');
 const path = require('path');
 
-const ccpPath = path.resolve(__dirname, '..', '..', 'first-network', 'connection-org1.json');
+// const ccpPath = path.resolve(__dirname, '..', '..', 'first-network', 'connection-org1.json');
+const ccpPath = path.resolve(__dirname, 'poc-network.json');
 
 async function main() {
     try {
@@ -34,7 +35,7 @@ async function main() {
 
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
-        await gateway.connect(ccpPath, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: true } });
+        await gateway.connect(ccpPath, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: false } });
 
         // Get the CA client object from the gateway for interacting with the CA.
         const ca = gateway.getClient().getCertificateAuthority();

@@ -17,7 +17,8 @@ app.use(cors());
 const { FileSystemWallet, Gateway } = require('fabric-network');
 const path = require('path');
 
-const ccpPath = path.resolve(__dirname, '..', '..', 'first-network', 'connection-org1.json');
+// const ccpPath = path.resolve(__dirname, '..', '..', 'first-network', 'connection-org1.json');
+const ccpPath = path.resolve(__dirname, 'poc-network.json');
 
 
 
@@ -41,7 +42,7 @@ let gettxid = (asset) => {
 
                 // Create a new gateway for connecting to our peer node.
                 const gateway = new Gateway();
-                await gateway.connect(ccpPath, { wallet, identity: 'user1', discovery: { enabled: true, asLocalhost: true }} );
+                await gateway.connect(ccpPath, { wallet, identity: 'user1', discovery: { enabled: false, asLocalhost: false }} );
 
                 // Get the network (channel) our contract is deployed to.
                 const network = await gateway.getNetwork('mychannel');
@@ -49,11 +50,6 @@ let gettxid = (asset) => {
                 // Get the contract from the network.
                 const contract = network.getContract('fabcar');
 
-                // Submit the specified transaction.
-                // createCar transaction - requires 5 argument, ex: ('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom')
-                // changeCarOwner transaction - requires 2 args , ex: ('changeCarOwner', 'CAR10', 'Dave')
-                //console.log(asset.carNo);
-                // let test = await contract.submitTransaction('createCar',asset.someUniqueID , JSON.stringify(asset.encryptionKey), JSON.stringify(asset.hash), JSON.stringify(asset.name), JSON.stringify(asset.note),JSON.stringify(asset.fileType));
                 const myTx = contract.createTransaction('createContract');
                 if(!asset.someUniqueID){
                     throw error;
@@ -73,7 +69,6 @@ let gettxid = (asset) => {
                 if(!asset.fileType){
                     throw error;
                 }
-                console.log('test');
                 await myTx.submit(asset.someUniqueID, JSON.stringify(asset.encryptionKey), JSON.stringify(asset.hash), JSON.stringify(asset.name), JSON.stringify(asset.note),JSON.stringify(asset.fileType));
                 const txId = myTx.getTransactionID();
                 console.log('Transaction has been submitted');
@@ -119,13 +114,12 @@ let getdetails = (txid) => {
 
                 // Create a new gateway for connecting to our peer node.
                 const gateway = new Gateway();
-                await gateway.connect(ccpPath, { wallet, identity: 'user1', discovery: { enabled: true, asLocalhost: true }} );
+                await gateway.connect(ccpPath, { wallet, identity: 'user1', discovery: { enabled: false, asLocalhost: false }} );
 
                 // Get the network (channel) our contract is deployed to.
                 const network = await gateway.getNetwork('mychannel');
                 const channel = network.getChannel();
                 // Get the contract from the network.
-                // const contract = network.getContract('fabcar');
 
                 let response_payload = await channel.queryTransaction(txid);
                 resolve (response_payload);
